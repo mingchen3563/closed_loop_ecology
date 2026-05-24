@@ -1,0 +1,30 @@
+<mod>
+	<name>Closed Loop Ecology</name>
+	<description>
+		<![CDATA[Realistic carbon and nitrogen cycles for Space Haven.
+
+Vanilla's life-support economy has two problems:
+- Composting biomass loses 87% of mass to the void (1 biomass → 0.017 fertilizer + 0.10 water + 0.017 carbon, total ~0.13 units recovered).
+- Carbon is mineable but gated at Mining skill level 7, on par with Noble Metals — unjustified given carbon's natural abundance in space.
+- Chemicals (fertilizer precursor) is locked behind Rot, which only comes from combat/corpses. Peaceful playthroughs can't sustain the food cycle.
+
+This mod closes the loops with five targeted patches:
+
+1. **Carbon mining accessible** — drops Mining requirement from level 7 → 2 (matches Base Metals). Raw Chemicals from 6 → 3. Carbonaceous chondrite asteroids should be early-game minable.
+
+2. **Composter retains realistic carbon** — bumps biomass→carbon and produce→carbon outputs ~6× (from 0.017 to ~0.10). Matches real biochar yields of 30-70% carbon retention.
+
+3. **CO2 scrubber actually captures carbon** — boosts atmospheric carbon recovery 10×. Crew respiration is no longer just a vent loss.
+
+4. **New industrial chemicals synthesis** — adds a recipe to the existing Chemical Refinery: 1 Carbon + 3 Water → 1 Chemicals + 1 Oxygen. Real-world analog: Fischer-Tropsch synthesis. Closes the food cycle without combat dependency.
+
+5. **New biomass pyrolysis recipe** — 2 Biomass → 1 Carbon + 50 CO2 (industrial charcoal production). Bypasses composter for high-throughput carbon refining.
+
+After install, a peaceful 5-crew ship can sustain its fertilizer cycle without trading or hunting, while carbon becomes a meaningful mid-game resource instead of a useless byproduct.]]>
+	</description>
+	<minimumLoaderVersion>0.12.1</minimumLoaderVersion>
+	<version>0.1.0</version>
+	<author>mingc</author>
+	<modid>7700002</modid>
+	<config></config>
+</mod>

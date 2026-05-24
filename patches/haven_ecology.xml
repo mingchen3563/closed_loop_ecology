@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+
+	<!--
+	  ════════════════════════════════════════════════════════════════════════
+	  Closed Loop Ecology — Phase 1
+	  Five surgical patches that close the food/carbon/chemicals cycle.
+
+	  References (real-world chemistry):
+	    - Biochar carbon retention 30-70%       (vanilla: 1.7%)
+	    - Carbonaceous chondrites Mining easy   (vanilla: lvl 7 expert)
+	    - CO2 electrolysis efficiency 60-80%    (vanilla: 0.01%)
+	    - Fischer-Tropsch synthesis (1925)      Carbon + H2O → hydrocarbons
+	    - Industrial pyrolysis                  Biomass → biochar + CO2
+
+	  All operations target Process recipes under /data/Product, plus mining
+	  difficulties under specific Product entries. No new stations, no new
+	  visual assets — everything reuses existing UI and animations.
+	  ════════════════════════════════════════════════════════════════════════
+	-->
+
+
+	<!-- ════════════════════════════════════════════════════════════════════
+	     SECTION 1: Carbon and Raw Chemicals minable at reasonable levels
+	     ════════════════════════════════════════════════════════════════════ -->
+
+	<!-- Carbon (170): Mining skill 7 → 2.  Matches Base Metals tier.
+	     Justification: carbonaceous chondrites are soft and friable;
+	     real space carbon mining requires no special skill. -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='170']/mineable/difficulty</xpath>
+		<attribute>level</attribute>
+		<value>2</value>
+	</Operation>
+
+	<!-- Raw Chemicals (171): Mining skill 6 → 3.  Slightly above Carbon. -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='171']/mineable/difficulty</xpath>
+		<attribute>level</attribute>
+		<value>3</value>
+	</Operation>
+
+
+	<!-- ════════════════════════════════════════════════════════════════════
+	     SECTION 2: Composter retains realistic amounts of carbon
+	     (biochar-like efficiency, 30-50% of input mass)
+	     ════════════════════════════════════════════════════════════════════ -->
+
+	<!-- 2467 Biomass:  carbon 0.017 → 0.10  (6×) -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='2467']/products/l[@element='170']</xpath>
+		<attribute>produceEvery</attribute>
+		<value>10</value>
+	</Operation>
+
+	<!-- 2472 Root Veggies:  carbon 0.020 → 0.125  (6.25×) -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='2472']/products/l[@element='170']</xpath>
+		<attribute>produceEvery</attribute>
+		<value>8</value>
+	</Operation>
+
+	<!-- 2463 Fruit:  carbon 0.020 → 0.125 -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='2463']/products/l[@element='170']</xpath>
+		<attribute>produceEvery</attribute>
+		<value>8</value>
+	</Operation>
+
+	<!-- 2468 Fiber:  carbon 0.020 → 0.125 -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='2468']/products/l[@element='170']</xpath>
+		<attribute>produceEvery</attribute>
+		<value>8</value>
+	</Operation>
+
+	<!-- 2897 Nuts:  carbon 0.020 → 0.125 -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='2897']/products/l[@element='170']</xpath>
+		<attribute>produceEvery</attribute>
+		<value>8</value>
+	</Operation>
+
+	<!-- 2478 Artificial Meat:  carbon 0.040 → 0.250  (lab-protein has more C) -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='2478']/products/l[@element='170']</xpath>
+		<attribute>produceEvery</attribute>
+		<value>4</value>
+	</Operation>
+
+	<!-- 2471 Processed Food (Algae):  carbon 0.010 → 0.063 -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='2471']/products/l[@element='170']</xpath>
+		<attribute>produceEvery</attribute>
+		<value>16</value>
+	</Operation>
+
+	<!-- 2473 Space Food:  carbon 0.010 → 0.063 -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='2473']/products/l[@element='170']</xpath>
+		<attribute>produceEvery</attribute>
+		<value>16</value>
+	</Operation>
+
+
+	<!-- ════════════════════════════════════════════════════════════════════
+	     SECTION 3: CO2 scrubber recovers usable carbon
+	     ════════════════════════════════════════════════════════════════════ -->
+
+	<!-- Recipe 66 (CO2 → Carbon): carbon yield 0.001 → 0.01  (10×).
+	     Still requires ~100 CO2 per Carbon — atmospheric capture is hard. -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='66']/products/l[@element='170']</xpath>
+		<attribute>produceEvery</attribute>
+		<value>100</value>
+	</Operation>
+
+
+	<!-- ════════════════════════════════════════════════════════════════════
+	     SECTION 4: New recipe — Industrial Chemicals Synthesis
+	     (Carbon + Water → Chemicals + Oxygen, hosted on Chemical Refinery)
+	     ════════════════════════════════════════════════════════════════════ -->
+
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product</xpath>
+		<value>
+			<product eid="7700001" type="Process" interactive="true"
+			         startOnly="false" itemScrapper="false" smelter="true"
+			         scrapper="false" composter="false"
+			         processValue="100" customPriority="-1">
+				<name tid="100"/>
+				<GUIAnimation aid="chemicalsIcon1"/>
+				<sort s="3" p="20"/>
+				<needs>
+					<l element="170" howMuch="1" consumeEvery="100"/>
+					<l element="16"  howMuch="1" consumeEvery="33"/>
+				</needs>
+				<products>
+					<l element="176" howMuch="1" produceEvery="100"/>
+					<l element="63"  howMuch="1" produceEvery="100"/>
+				</products>
+				<difficulty skill="Industry" level="2"/>
+				<desc/>
+			</product>
+		</value>
+	</Operation>
+
+	<!-- Attach new recipe to dispatcher 963 (Chemical Refinery, mid 939) -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product/product[@eid='963']/list/processes</xpath>
+		<value>
+			<l process="7700001"/>
+		</value>
+	</Operation>
+
+
+	<!-- ════════════════════════════════════════════════════════════════════
+	     SECTION 5: New recipe — Biomass Pyrolysis
+	     (2 Biomass → 1 Carbon + 50 CO2, industrial charcoal production)
+	     ════════════════════════════════════════════════════════════════════ -->
+
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product</xpath>
+		<value>
+			<product eid="7700010" type="Process" interactive="true"
+			         startOnly="false" itemScrapper="false" smelter="true"
+			         scrapper="false" composter="false"
+			         processValue="100" customPriority="-1">
+				<name tid="100"/>
+				<GUIAnimation aid="carbonIcon1"/>
+				<sort s="3" p="20"/>
+				<needs>
+					<l element="71" howMuch="1" consumeEvery="50"/>
+				</needs>
+				<products>
+					<l element="170" howMuch="1" produceEvery="100"/>
+					<l element="64"  howMuch="50" produceEvery="100"/>
+				</products>
+				<difficulty skill="Industry" level="1"/>
+				<desc/>
+			</product>
+		</value>
+	</Operation>
+
+	<!-- Attach pyrolysis recipe to dispatcher 963 -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product/product[@eid='963']/list/processes</xpath>
+		<value>
+			<l process="7700010"/>
+		</value>
+	</Operation>
+
+</Patch>
