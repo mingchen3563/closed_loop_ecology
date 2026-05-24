@@ -23,7 +23,7 @@ Five surgical patches against `library/haven`:
 | 1 | Carbon mining lvl 7 → **2** | Early-game crew can mine carbon asteroids |
 | 1 | Raw Chemicals mining lvl 6 → **3** | Similar industrial-grade material gating |
 | 2 | Composter carbon output × **6** | 1 biomass → 0.10 carbon (matches biochar yields) |
-| 3 | CO2 scrubber carbon output × **10** | Atmospheric carbon capture becomes meaningful |
+| 3 | CO2 scrubber = exact inverse of carbon burner | Lossless round-trip C↔CO2 (no exploit) |
 | 4 | **New recipe: Industrial Chemicals Synthesis** | 1 Carbon + 3 Water → **3 Chemicals + 2 Oxygen** |
 | 5 | **New recipe: Biomass Pyrolysis** | 2 Biomass → 1 Carbon + 50 CO2 |
 
@@ -47,7 +47,7 @@ Translation: **the food loop closes, water demand goes up slightly** (industrial
 |---|---|
 | Easier carbon mining | [Carbonaceous chondrite asteroids](https://en.wikipedia.org/wiki/Carbonaceous_chondrite) — ~75% of all asteroids by type, soft and friable |
 | Composter carbon retention | [Biochar](https://en.wikipedia.org/wiki/Biochar) production typically retains 30-70% of input carbon |
-| Atmospheric CO2 → Carbon | [CO2 electrolysis](https://en.wikipedia.org/wiki/Electrolysis_of_carbon_dioxide) achieves 60-80% efficiency in lab |
+| Atmospheric CO2 → Carbon | [CO2 electrolysis](https://en.wikipedia.org/wiki/Electrolysis_of_carbon_dioxide) — mirrors the burner's stoichiometry so the C↔CO2 round-trip is mass-conservative (no free carbon from looping the burner+scrubber) |
 | Carbon + Water → Chemicals | [Fischer-Tropsch synthesis](https://en.wikipedia.org/wiki/Fischer%E2%80%93Tropsch_process) (industrial since 1925) |
 | Biomass → Carbon | Pyrolysis / charcoal production (5000+ years of human history) |
 

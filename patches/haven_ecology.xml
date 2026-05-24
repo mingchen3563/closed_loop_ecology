@@ -104,15 +104,31 @@
 
 
 	<!-- ════════════════════════════════════════════════════════════════════
-	     SECTION 3: CO2 scrubber recovers usable carbon
+	     SECTION 3: CO2 scrubber is the exact mathematical inverse of the
+	     carbon burner (recipe 65), so the round-trip C → CO2 → C conserves
+	     mass exactly. No free-energy exploit.
+
+	       Burner (recipe 65):
+	         consume 0.0025 carbon / cycle   produce 50 CO2 / cycle
+	         ratio: 1 C  →  20,000 CO2
+
+	       Scrubber (recipe 66, after this patch):
+	         consume 50 CO2 / cycle           produce 0.0025 carbon / cycle
+	         ratio: 20,000 CO2  →  1 C
 	     ════════════════════════════════════════════════════════════════════ -->
 
-	<!-- Recipe 66 (CO2 → Carbon): carbon yield 0.001 → 0.01  (10×).
-	     Still requires ~100 CO2 per Carbon — atmospheric capture is hard. -->
+	<!-- CO2 input: 10/cycle → 50/cycle (matches burner's CO2 output exactly) -->
+	<Operation Class="AttributeSet">
+		<xpath>/data/Product/product[@eid='66']/needs/l[@element='64']</xpath>
+		<attribute>howMuch</attribute>
+		<value>50</value>
+	</Operation>
+
+	<!-- Carbon output: 0.001/cycle → 0.0025/cycle (matches burner's carbon consumption) -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='66']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
-		<value>100</value>
+		<value>400</value>
 	</Operation>
 
 
