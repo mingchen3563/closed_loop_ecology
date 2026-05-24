@@ -132,12 +132,12 @@
 				<GUIAnimation aid="chemicalsIcon1"/>
 				<sort s="3" p="20"/>
 				<needs>
-					<l element="170" howMuch="1" consumeEvery="100"/>
-					<l element="16"  howMuch="1" consumeEvery="33"/>
+					<l element="170" howMuch="1" consumeEvery="1"/>    <!-- 1 carbon per cycle -->
+					<l element="16"  howMuch="3" consumeEvery="1"/>    <!-- 3 water per cycle -->
 				</needs>
 				<products>
-					<l element="176" howMuch="1" produceEvery="33"/>   <!-- 3 chemicals per cycle (was 1) -->
-					<l element="63"  howMuch="1" produceEvery="50"/>   <!-- 2 oxygen per cycle (was 1) -->
+					<l element="176" howMuch="3" produceEvery="1"/>    <!-- 3 chemicals per cycle -->
+					<l element="63"  howMuch="2" produceEvery="1"/>    <!-- 2 oxygen per cycle -->
 				</products>
 				<difficulty skill="Industry" level="2"/>
 				<desc/>
@@ -170,11 +170,11 @@
 				<GUIAnimation aid="carbonIcon1"/>
 				<sort s="3" p="20"/>
 				<needs>
-					<l element="71" howMuch="1" consumeEvery="50"/>
+					<l element="71" howMuch="2" consumeEvery="1"/>     <!-- 2 biomass per cycle -->
 				</needs>
 				<products>
-					<l element="170" howMuch="1" produceEvery="100"/>
-					<l element="64"  howMuch="50" produceEvery="100"/>
+					<l element="170" howMuch="1"  produceEvery="1"/>   <!-- 1 carbon per cycle -->
+					<l element="64"  howMuch="50" produceEvery="1"/>   <!-- 50 CO2 per cycle -->
 				</products>
 				<difficulty skill="Industry" level="1"/>
 				<desc/>
