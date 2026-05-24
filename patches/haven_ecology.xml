@@ -136,8 +136,8 @@
 					<l element="16"  howMuch="1" consumeEvery="33"/>
 				</needs>
 				<products>
-					<l element="176" howMuch="1" produceEvery="100"/>
-					<l element="63"  howMuch="1" produceEvery="100"/>
+					<l element="176" howMuch="1" produceEvery="33"/>   <!-- 3 chemicals per cycle (was 1) -->
+					<l element="63"  howMuch="1" produceEvery="50"/>   <!-- 2 oxygen per cycle (was 1) -->
 				</products>
 				<difficulty skill="Industry" level="2"/>
 				<desc/>

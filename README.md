@@ -24,7 +24,7 @@ Five surgical patches against `library/haven`:
 | 1 | Raw Chemicals mining lvl 6 → **3** | Similar industrial-grade material gating |
 | 2 | Composter carbon output × **6** | 1 biomass → 0.10 carbon (matches biochar yields) |
 | 3 | CO2 scrubber carbon output × **10** | Atmospheric carbon capture becomes meaningful |
-| 4 | **New recipe: Industrial Chemicals Synthesis** | 1 Carbon + 3 Water → 1 Chemicals + 1 Oxygen |
+| 4 | **New recipe: Industrial Chemicals Synthesis** | 1 Carbon + 3 Water → **3 Chemicals + 2 Oxygen** |
 | 5 | **New recipe: Biomass Pyrolysis** | 2 Biomass → 1 Carbon + 50 CO2 |
 
 Both new recipes run at the existing Chemical Refinery (mid 939) — no new station to build.
