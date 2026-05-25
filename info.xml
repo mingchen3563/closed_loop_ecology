@@ -1,7 +1,7 @@
 <mod>
 	<name>Closed Loop Ecology</name>
 	<description>
-		<![CDATA[Realistic carbon, water, and nitrogen cycles for Space Haven.
+		<![CDATA[Realistic carbon and nitrogen cycles for Space Haven.
 
 Vanilla's life-support economy has three structural breaks:
 - Composting biomass loses 87% of its mass to the accounting void
@@ -10,7 +10,7 @@ Vanilla's life-support economy has three structural breaks:
 
 Peaceful playthroughs can't close the food loop without trading.
 
-This mod ships six surgical patches:
+This mod ships five surgical patches:
 
 1. Carbon mining skill 7 → 2 (matches Base Metals); Raw Chemicals 6 → 3.
    Carbonaceous chondrite asteroids become early-game accessible.
@@ -23,24 +23,21 @@ This mod ships six surgical patches:
    no more free-carbon exploit from looping burner + scrubber.
 
 4. New recipe — Industrial Chemicals Synthesis (interactive at the
-   existing Chemical Refinery): 1 Carbon + 3 Water → 3 Chemicals
-   + 2 Oxygen Tanks. The tanks auto-vent to atmospheric O2 at any
-   Life Support station. Real-world analog: Fischer-Tropsch synthesis
-   plus water electrolysis. Closes the fertilizer cycle without
-   combat dependency.
+   existing Chemical Refinery): 1 Carbon + 3 Water → 3 Chemicals.
+   Real-world analog: Fischer-Tropsch synthesis. Closes the fertilizer
+   cycle without combat dependency. Conditional "produce if storage < X"
+   condition works because outputs are item-only.
 
 5. New recipe — Biomass Pyrolysis (interactive at Chemical Refinery):
-   2 Biomass → 1 Carbon + 1 Char Residue. Residue auto-vents to CO2
-   at the CO2 Scrubber. Real-world analog: industrial pyrolysis /
-   charcoal production. Bypasses the lossy composter for high-
-   throughput carbon refining.
+   2 Biomass → 1 Carbon. Real-world analog: industrial pyrolysis /
+   charcoal production. Bypasses the lossy composter for high-throughput
+   carbon refining.
 
-6. Two-stage gas-byproduct pattern: gas outputs are bridged through
-   transient inventory items (Oxygen Tank, Char Residue) so the
-   interactive "produce if storage < X" condition keeps working on
-   the crew-operated recipes, while the actual atmospheric release
-   happens via non-interactive vents at appropriate life-support
-   stations.
+Gas byproducts (oxygen from electrolysis, CO2 from pyrolysis) are
+intentionally not modeled — they would break the conditional UI on
+interactive recipes. Reserved for a future Pyrolysis Reactor station
+that can host both the interactive recipe and its non-interactive
+gas-vent on its own (without polluting vanilla stations).
 
 After install, a peaceful 5-crew ship can run an indefinite food
 cycle on the carbon they mine + the biomass they compost. Water

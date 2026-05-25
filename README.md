@@ -23,31 +23,24 @@ Six surgical patches against `library/haven`:
 | 1 | Carbon mining lvl 7 → **2**, Raw Chemicals 6 → **3** | Early-game crew can mine carbon |
 | 2 | Composter carbon output × **6** (recipe 2467 + 7 food-compost variants) | 1 biomass → 0.10 carbon (matches real biochar yields) |
 | 3 | CO2 scrubber = exact mathematical inverse of carbon burner | Round-trip C ↔ CO2 is mass-conservative, no free-carbon exploit |
-| 4 | **New recipe: Industrial Chemicals Synthesis** | Interactive at Chemical Refinery: 1 Carbon + 3 Water → 3 Chemicals + 2 Oxygen Tanks (items). Tanks auto-vent to 100 atmospheric O2 at Life Support |
-| 5 | **New recipe: Biomass Pyrolysis** | Interactive at Chemical Refinery: 2 Biomass → 1 Carbon + 1 Char Residue (item). Residue auto-vents to 50 CO2 at CO2 Scrubber |
-| 6 | Two-stage gas-byproduct pattern | Transient inventory items bridge interactive recipes (which can't expose gas outputs to the conditional UI) and non-interactive atmospheric vents |
+| 4 | **New recipe: Industrial Chemicals Synthesis** | Interactive at Chemical Refinery: 1 Carbon + 3 Water → 3 Chemicals |
+| 5 | **New recipe: Biomass Pyrolysis** | Interactive at Chemical Refinery: 2 Biomass → 1 Carbon |
 
 All new recipes run at existing vanilla stations — no new visual assets, no new buildings.
 
-## The two-stage gas pattern explained
+## Gas byproducts (intentionally omitted)
 
-Space Haven's "produce if storage < X" UI on interactive recipes doesn't reconcile gas outputs (Oxygen, CO2 — they have no inventory). So an interactive recipe with mixed item+gas outputs stalls in a permanent condition-mismatch.
+Physically, the new recipes should emit gas byproducts:
+- Industrial Chemicals Synthesis (Fischer-Tropsch + electrolysis) → free O2 to atmosphere
+- Biomass Pyrolysis → CO2 to atmosphere (50% of biomass mass)
 
-This mod's workaround: use **transient inventory items** that get auto-vented at appropriate stations:
+The mod doesn't model these because:
 
-```
-Stage A (interactive, items only)              Stage B (non-interactive, gas vent)
+1. **Interactive recipes with mixed item+gas outputs break the conditional UI.** Space Haven's "produce if storage < X" stop-condition can't reconcile gas outputs (no inventory), so the recipe stalls in a permanent condition-mismatch.
 
-Chemical Refinery                              Life Support stations
-  Crew runs Chemicals Synthesis                  Auto-runs when oxygen tank in storage
-  1 C + 3 H2O → 3 Chemicals + 2 O2 Tank          1 O2 Tank → 50 atmospheric O2
+2. **The two-stage workaround** (transient inventory items auto-vented at other stations) is functional but pollutes vanilla stations like the CO2 Scrubber and Life Support with mod recipes. Stacking with other ecology mods becomes messy.
 
-Chemical Refinery                              CO2 Scrubber
-  Crew runs Pyrolysis                            Auto-runs when char residue in storage
-  2 Biomass → 1 Carbon + 1 Char Residue          1 Char Residue → 50 atmospheric CO2
-```
-
-Crew get a clean conditional UI on the interactive side; atmosphere gets the gas release as a separate auto-cycle. Items represent compressed gas / unprocessed exhaust waiting to be released.
+The gas byproducts are abstracted as part of station atmospheric exchange. A future version may re-introduce them via a dedicated mod station (Pyrolysis Reactor / Electrolysis Cell) that hosts both the interactive recipe and its non-interactive vent without touching vanilla stations.
 
 ## After install (5-crew steady state)
 
@@ -57,8 +50,8 @@ Crew get a clean conditional UI on the interactive side; atmosphere gets the gas
 | Fertilizer | **-0.158** ⚠ (deficit) | **±0** ✓ (closed via chemicals synthesis) |
 | Chemicals demand | 0.16/day (must import) | 0 (self-synthesized from carbon + water) |
 | Water | -1.15 | -1.6 (synthesis uses extra water) |
-| Atmospheric O2 | from O2 generators only | + bonus 100/cycle from chemicals synthesis |
-| Atmospheric CO2 | from crew breath only | + 50/cycle from pyrolysis (recaptured by scrubber) |
+| Atmospheric O2 | from O2 generators only | unchanged (vanilla O2 gen handles it) |
+| Atmospheric CO2 | from crew breath only | unchanged (vanilla scrubber handles it) |
 
 Translation: **the food/fertilizer loop closes**. Water demand goes up slightly (ice mining still required). Atmosphere is more dynamic — extra O2 and CO2 enter through industrial processes, with the scrubber/Life-Support pair handling the equilibrium.
 
@@ -114,9 +107,8 @@ Then launch `spacehaven-modloader`, enable **Closed Loop Ecology**, apply, launc
 
 Existing stations on a save snapshot their `<features>` config at build time. After installing the mod you **must dismantle and rebuild**:
 
-- **Chemical Refinery** (any existing) — to pick up the new Pyrolysis and Industrial Chemicals Synthesis recipes
-- **CO2 Scrubber** — to pick up the Char Residue auto-vent
-- **Life Support** (any of the three variants: mid 861, 924, 61) — to pick up the Oxygen Tank auto-vent
+- **Chemical Refinery** — to pick up the new Pyrolysis and Industrial Chemicals Synthesis recipes
+- **CO2 Scrubber** — to pick up the rebalanced (burner-symmetric) carbon recovery rate
 - **Composter** — to pick up the boosted carbon retention
 
 Newly-built stations on the same save pick up the changes automatically. This is a save-state quirk, not a mod bug.
@@ -126,7 +118,7 @@ Newly-built stations on the same save pick up the changes automatically. This is
 - Stacks cleanly with [drones_plus](https://github.com/mingchen3563/drones_plus) — that mod tunes bot stations; this one tunes ecology. No overlap.
 - Other mods that touch composter recipes (2467, 2472, etc.) overlap — last-loaded `AttributeSet` wins.
 - Mods adding new recipes to dispatcher 963 stack fine (NodeAdd is additive).
-- Mods modifying mid 922 (CO2 Scrubber), 861/924/61 (Life Support) `<produces>` blocks may overlap.
+- Touches mid 922 (CO2 Scrubber) `<needs>` and `<products>` on recipe 66 only.
 
 ## Project layout
 
@@ -142,14 +134,10 @@ closed_loop_ecology/
 
 | ID | Kind | Name |
 |---|---|---|
-| 7700001 | Process recipe | Industrial Chemicals Synthesis (interactive) |
-| 7700010 | Process recipe | Biomass Pyrolysis (interactive) |
-| 7700020 | Elementary item | Char Residue (transient inventory item) |
-| 7700021 | Elementary item | Oxygen Tank (transient inventory item) |
-| 7700022 | Process recipe | Char Residue → CO2 vent (non-interactive) |
-| 7700023 | Process recipe | Oxygen Tank → O2 vent (non-interactive) |
+| 7700001 | Process recipe | Industrial Chemicals Synthesis (interactive, on Chemical Refinery) |
+| 7700010 | Process recipe | Biomass Pyrolysis (interactive, on Chemical Refinery) |
 
-All under the `77000xx` namespace anchored on modid `7700002`.
+All under the `77000xx` namespace anchored on modid `7700002`. IDs 7700020-7700099 reserved for the future Pyrolysis Reactor station and its gas-vent recipes.
 
 ## License
 

@@ -4,18 +4,27 @@
 	<!--
 	  ════════════════════════════════════════════════════════════════════════
 	  Closed Loop Ecology — Phase 1
+
 	  Five surgical patches that close the food/carbon/chemicals cycle.
 
 	  References (real-world chemistry):
 	    - Biochar carbon retention 30-70%       (vanilla: 1.7%)
 	    - Carbonaceous chondrites Mining easy   (vanilla: lvl 7 expert)
-	    - CO2 electrolysis efficiency 60-80%    (vanilla: 0.01%)
+	    - Burner / scrubber round-trip          must be mass-conservative
 	    - Fischer-Tropsch synthesis (1925)      Carbon + H2O → hydrocarbons
 	    - Industrial pyrolysis                  Biomass → biochar + CO2
 
-	  All operations target Process recipes under /data/Product, plus mining
-	  difficulties under specific Product entries. No new stations, no new
-	  visual assets — everything reuses existing UI and animations.
+	  Note on gas byproducts:
+	    Both new interactive recipes (7700001 Chemicals Synthesis, 7700010
+	    Biomass Pyrolysis) physically should emit gas byproducts (O2 and CO2
+	    respectively). They don't, because:
+	      (a) interactive recipes with mixed item+gas outputs break the
+	          "produce if storage < X" condition UI
+	      (b) the two-stage workaround (transient items auto-vented at other
+	          stations) pollutes existing vanilla stations with mod recipes
+
+	    Both gas byproducts are abstracted as part of station atmospheric
+	    exchange until a dedicated mod station is added to host them cleanly.
 	  ════════════════════════════════════════════════════════════════════════
 	-->
 
@@ -43,7 +52,7 @@
 
 	<!-- ════════════════════════════════════════════════════════════════════
 	     SECTION 2: Composter retains realistic amounts of carbon
-	     (biochar-like efficiency, 30-50% of input mass)
+	     (biochar-like efficiency, ~10-25% of input mass)
 	     ════════════════════════════════════════════════════════════════════ -->
 
 	<!-- 2467 Biomass:  carbon 0.017 → 0.10  (6×) -->
@@ -53,49 +62,49 @@
 		<value>10</value>
 	</Operation>
 
-	<!-- 2472 Root Veggies:  carbon 0.020 → 0.125  (6.25×) -->
+	<!-- 2472 Root Veggies:  carbon 0.020 → 0.125 -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2472']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>8</value>
 	</Operation>
 
-	<!-- 2463 Fruit:  carbon 0.020 → 0.125 -->
+	<!-- 2463 Fruit -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2463']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>8</value>
 	</Operation>
 
-	<!-- 2468 Fiber:  carbon 0.020 → 0.125 -->
+	<!-- 2468 Fiber -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2468']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>8</value>
 	</Operation>
 
-	<!-- 2897 Nuts:  carbon 0.020 → 0.125 -->
+	<!-- 2897 Nuts -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2897']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>8</value>
 	</Operation>
 
-	<!-- 2478 Artificial Meat:  carbon 0.040 → 0.250  (lab-protein has more C) -->
+	<!-- 2478 Artificial Meat:  more concentrated lab-protein → more carbon -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2478']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>4</value>
 	</Operation>
 
-	<!-- 2471 Processed Food (Algae):  carbon 0.010 → 0.063 -->
+	<!-- 2471 Processed Food (Algae) -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2471']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>16</value>
 	</Operation>
 
-	<!-- 2473 Space Food:  carbon 0.010 → 0.063 -->
+	<!-- 2473 Space Food -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2473']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
@@ -108,23 +117,18 @@
 	     carbon burner (recipe 65), so the round-trip C → CO2 → C conserves
 	     mass exactly. No free-energy exploit.
 
-	       Burner (recipe 65):
-	         consume 0.0025 carbon / cycle   produce 50 CO2 / cycle
-	         ratio: 1 C  →  20,000 CO2
+	       Burner (recipe 65) per cycle:
+	         consume 0.0025 carbon  →  produce 50 CO2     (ratio 1 C : 20,000 CO2)
 
-	       Scrubber (recipe 66, after this patch):
-	         consume 50 CO2 / cycle           produce 0.0025 carbon / cycle
-	         ratio: 20,000 CO2  →  1 C
+	       Scrubber (recipe 66) per cycle, after this patch:
+	         consume 50 CO2         →  produce 0.0025 carbon
 	     ════════════════════════════════════════════════════════════════════ -->
 
-	<!-- CO2 input: 10/cycle → 50/cycle (matches burner's CO2 output exactly) -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='66']/needs/l[@element='64']</xpath>
 		<attribute>howMuch</attribute>
 		<value>50</value>
 	</Operation>
-
-	<!-- Carbon output: 0.001/cycle → 0.0025/cycle (matches burner's carbon consumption) -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='66']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
@@ -134,7 +138,10 @@
 
 	<!-- ════════════════════════════════════════════════════════════════════
 	     SECTION 4: New recipe — Industrial Chemicals Synthesis
-	     (Carbon + Water → Chemicals + Oxygen, hosted on Chemical Refinery)
+	     (Carbon + Water → Chemicals, hosted on Chemical Refinery)
+
+	     Item-only outputs.  Conditional "produce if storage < X" UI works.
+	     Oxygen byproduct intentionally omitted (would break the UI).
 	     ════════════════════════════════════════════════════════════════════ -->
 
 	<Operation Class="NodeAdd">
@@ -152,8 +159,7 @@
 					<l element="16"  howMuch="3" consumeEvery="1"/>    <!-- 3 water per cycle -->
 				</needs>
 				<products>
-					<l element="176"     howMuch="3" produceEvery="1"/>    <!-- 3 chemicals per cycle -->
-					<l element="7700021" howMuch="2" produceEvery="1"/>    <!-- 2 oxygen tanks (auto-vented later) -->
+					<l element="176" howMuch="3" produceEvery="1"/>    <!-- 3 chemicals per cycle -->
 				</products>
 				<accidentList listId="3146"/>
 				<difficulty skill="Industry" level="2">
@@ -164,7 +170,7 @@
 		</value>
 	</Operation>
 
-	<!-- Attach new recipe to dispatcher 963 (Chemical Refinery, mid 939) -->
+	<!-- Attach to Chemical Refinery's dispatcher 963 -->
 	<Operation Class="NodeAdd">
 		<xpath>/data/Product/product[@eid='963']/list/processes</xpath>
 		<value>
@@ -174,33 +180,15 @@
 
 
 	<!-- ════════════════════════════════════════════════════════════════════
-	     SECTION 5: Biomass Pyrolysis with two-stage CO2 release
+	     SECTION 5: New recipe — Biomass Pyrolysis
+	     (2 Biomass → 1 Carbon, hosted on Chemical Refinery)
 
-	     Pattern:  interactive recipe outputs items only (so conditional UI works),
-	               and a non-interactive auto-vent recipe converts the residue item
-	               into atmospheric CO2 at the CO2 scrubber.
-
-	     Stage A — interactive at Chemical Refinery (mid 939, dispatcher 963):
-	       2 Biomass → 1 Carbon + 1 Char Residue (item)
-
-	     Stage B — non-interactive at CO2 Scrubber (mid 922):
-	       1 Char Residue → 50 CO2 (gas to atmosphere)
+	     Item-only outputs.  CO2 byproduct intentionally omitted; it would
+	     need a dedicated mod station to host the auto-vent without polluting
+	     the vanilla CO2 scrubber.  TODO: re-introduce when a Pyrolysis
+	     Reactor station is added.
 	     ════════════════════════════════════════════════════════════════════ -->
 
-	<!-- 5a. New ITEM: Char Residue (eid 7700020) -->
-	<Operation Class="NodeAdd">
-		<xpath>/data/Product</xpath>
-		<value>
-			<product eid="7700020" type="Elementary" item="0" elementType="Defined">
-				<name tid="100"/>
-				<GUIAnimation aid="rubbleIcon1"/>
-				<sort s="3" p="25"/>
-				<desc/>
-			</product>
-		</value>
-	</Operation>
-
-	<!-- 5b. Stage A — interactive Pyrolysis recipe (output items only) -->
 	<Operation Class="NodeAdd">
 		<xpath>/data/Product</xpath>
 		<value>
@@ -212,11 +200,10 @@
 				<GUIAnimation aid="carbonIcon1"/>
 				<sort s="3" p="20"/>
 				<needs>
-					<l element="71"      howMuch="2" consumeEvery="1"/>   <!-- 2 biomass per cycle -->
+					<l element="71" howMuch="2" consumeEvery="1"/>     <!-- 2 biomass per cycle -->
 				</needs>
 				<products>
-					<l element="170"     howMuch="1" produceEvery="1"/>   <!-- 1 carbon (biochar) -->
-					<l element="7700020" howMuch="1" produceEvery="1"/>   <!-- 1 char residue (待排) -->
+					<l element="170" howMuch="1" produceEvery="1"/>    <!-- 1 carbon (biochar) -->
 				</products>
 				<accidentList listId="3146"/>
 				<difficulty skill="Industry" level="1">
@@ -227,125 +214,11 @@
 		</value>
 	</Operation>
 
-	<!-- 5c. Stage B — non-interactive auto-vent recipe (residue → CO2 gas) -->
-	<Operation Class="NodeAdd">
-		<xpath>/data/Product</xpath>
-		<value>
-			<product eid="7700022" type="Process" interactive="false"
-			         startOnly="false" itemScrapper="false" smelter="false"
-			         scrapper="false" composter="false"
-			         processValue="100" customPriority="-1">
-				<name tid="100"/>
-				<GUIAnimation aid="co2ResourceIcon"/>
-				<needs>
-					<l element="7700020" howMuch="1" consumeEvery="1"/>   <!-- 1 char residue -->
-				</needs>
-				<products>
-					<l element="64"      howMuch="50" produceEvery="1"/>  <!-- 50 CO2 to atmosphere -->
-				</products>
-				<desc/>
-			</product>
-		</value>
-	</Operation>
-
-	<!-- 5d. Attach the auto-vent recipe to CO2 Scrubber's <produces> block.
-	     Triggers when char residue > 0 in ship storage (item-level logic). -->
-	<Operation Class="NodeAdd">
-		<xpath>/data/Element/me[@mid='922']/data/l/element/features/produces</xpath>
-		<value>
-			<l valuePerSec="50" product="7700022" basicPowerUsage="2.0"
-			   useHighCapPowerPerSec="0.0" powerCategory="Facilities" suction="false">
-				<logic resource="7700020" is="GreaterThan" value="0"/>
-				<heat type="HeatTo" temp="Low"/>
-			</l>
-		</value>
-	</Operation>
-
-	<!-- Attach pyrolysis recipe to dispatcher 963 -->
+	<!-- Attach to Chemical Refinery's dispatcher 963 -->
 	<Operation Class="NodeAdd">
 		<xpath>/data/Product/product[@eid='963']/list/processes</xpath>
 		<value>
 			<l process="7700010"/>
-		</value>
-	</Operation>
-
-
-	<!-- ════════════════════════════════════════════════════════════════════
-	     SECTION 6: Oxygen tank vent (chemicals synthesis O2 byproduct)
-
-	     Same two-stage pattern as Section 5:
-	       Stage A: Chemicals Synthesis outputs 3 chemicals + 2 oxygen tanks (items)
-	       Stage B: Oxygen tanks auto-vent at Life Support stations → atmospheric O2
-
-	     Hosts: Life Support stations (mid 861, 924, 61) all run recipe 62
-	     (water → O2). They already release O2 to atmosphere — perfect place to
-	     also vent compressed oxygen tanks.
-	     ════════════════════════════════════════════════════════════════════ -->
-
-	<!-- 6a. New ITEM: Oxygen Tank (eid 7700021) -->
-	<Operation Class="NodeAdd">
-		<xpath>/data/Product</xpath>
-		<value>
-			<product eid="7700021" type="Elementary" item="0" elementType="Defined">
-				<name tid="100"/>
-				<GUIAnimation aid="o2resourceIcon"/>
-				<sort s="3" p="26"/>
-				<desc/>
-			</product>
-		</value>
-	</Operation>
-
-	<!-- 6b. Non-interactive auto-vent recipe (tank → O2 gas) -->
-	<Operation Class="NodeAdd">
-		<xpath>/data/Product</xpath>
-		<value>
-			<product eid="7700023" type="Process" interactive="false"
-			         startOnly="false" itemScrapper="false" smelter="false"
-			         scrapper="false" composter="false"
-			         processValue="100" customPriority="-1">
-				<name tid="100"/>
-				<GUIAnimation aid="o2resourceIcon"/>
-				<needs>
-					<l element="7700021" howMuch="1" consumeEvery="1"/>   <!-- 1 oxygen tank -->
-				</needs>
-				<products>
-					<l element="63"      howMuch="50" produceEvery="1"/>  <!-- 50 O2 to atmosphere -->
-				</products>
-				<desc/>
-			</product>
-		</value>
-	</Operation>
-
-	<!-- 6c. Attach the vent recipe to all three Life Support station variants
-	     so any one the player builds can handle the venting. -->
-	<Operation Class="NodeAdd">
-		<xpath>/data/Element/me[@mid='861']/data/l/element/features/produces</xpath>
-		<value>
-			<l valuePerSec="50" product="7700023" basicPowerUsage="1.0"
-			   useHighCapPowerPerSec="0.0" powerCategory="LifeSupport" suction="false">
-				<logic resource="7700021" is="GreaterThan" value="0"/>
-				<heat type="HeatTo" temp="Low"/>
-			</l>
-		</value>
-	</Operation>
-	<Operation Class="NodeAdd">
-		<xpath>/data/Element/me[@mid='924']/data/l/element/features/produces</xpath>
-		<value>
-			<l valuePerSec="50" product="7700023" basicPowerUsage="1.0"
-			   useHighCapPowerPerSec="0.0" powerCategory="LifeSupport" suction="false">
-				<logic resource="7700021" is="GreaterThan" value="0"/>
-				<heat type="HeatTo" temp="Low"/>
-			</l>
-		</value>
-	</Operation>
-	<Operation Class="NodeAdd">
-		<xpath>/data/Element/me[@mid='61']/data/l/element/features/produces</xpath>
-		<value>
-			<l valuePerSec="50" product="7700023" basicPowerUsage="1.0"
-			   useHighCapPowerPerSec="0.0" powerCategory="LifeSupport" suction="false">
-				<logic resource="7700021" is="GreaterThan" value="0"/>
-				<heat type="HeatTo" temp="Low"/>
-			</l>
 		</value>
 	</Operation>
 
