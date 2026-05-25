@@ -152,12 +152,8 @@
 					<l element="16"  howMuch="3" consumeEvery="1"/>    <!-- 3 water per cycle -->
 				</needs>
 				<products>
-					<l element="176" howMuch="3" produceEvery="1"/>    <!-- 3 chemicals per cycle -->
-					<!-- Oxygen byproduct removed: atmospheric gases on interactive recipes
-					     break the "produce if storage < X" condition (the UI can't check
-					     a gas as inventory). Vanilla gas-output recipes (62/65/66) are all
-					     non-interactive for this reason. The oxygen released by water
-					     electrolysis is abstracted as vented. -->
+					<l element="176"     howMuch="3" produceEvery="1"/>    <!-- 3 chemicals per cycle -->
+					<l element="7700021" howMuch="2" produceEvery="1"/>    <!-- 2 oxygen tanks (auto-vented later) -->
 				</products>
 				<accidentList listId="3146"/>
 				<difficulty skill="Industry" level="2">
@@ -270,6 +266,86 @@
 		<xpath>/data/Product/product[@eid='963']/list/processes</xpath>
 		<value>
 			<l process="7700010"/>
+		</value>
+	</Operation>
+
+
+	<!-- ════════════════════════════════════════════════════════════════════
+	     SECTION 6: Oxygen tank vent (chemicals synthesis O2 byproduct)
+
+	     Same two-stage pattern as Section 5:
+	       Stage A: Chemicals Synthesis outputs 3 chemicals + 2 oxygen tanks (items)
+	       Stage B: Oxygen tanks auto-vent at Life Support stations → atmospheric O2
+
+	     Hosts: Life Support stations (mid 861, 924, 61) all run recipe 62
+	     (water → O2). They already release O2 to atmosphere — perfect place to
+	     also vent compressed oxygen tanks.
+	     ════════════════════════════════════════════════════════════════════ -->
+
+	<!-- 6a. New ITEM: Oxygen Tank (eid 7700021) -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product</xpath>
+		<value>
+			<product eid="7700021" type="Elementary" item="0" elementType="Defined">
+				<name tid="100"/>
+				<GUIAnimation aid="o2resourceIcon"/>
+				<sort s="3" p="26"/>
+				<desc/>
+			</product>
+		</value>
+	</Operation>
+
+	<!-- 6b. Non-interactive auto-vent recipe (tank → O2 gas) -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product</xpath>
+		<value>
+			<product eid="7700023" type="Process" interactive="false"
+			         startOnly="false" itemScrapper="false" smelter="false"
+			         scrapper="false" composter="false"
+			         processValue="100" customPriority="-1">
+				<name tid="100"/>
+				<GUIAnimation aid="o2resourceIcon"/>
+				<needs>
+					<l element="7700021" howMuch="1" consumeEvery="1"/>   <!-- 1 oxygen tank -->
+				</needs>
+				<products>
+					<l element="63"      howMuch="50" produceEvery="1"/>  <!-- 50 O2 to atmosphere -->
+				</products>
+				<desc/>
+			</product>
+		</value>
+	</Operation>
+
+	<!-- 6c. Attach the vent recipe to all three Life Support station variants
+	     so any one the player builds can handle the venting. -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Element/me[@mid='861']/data/l/element/features/produces</xpath>
+		<value>
+			<l valuePerSec="50" product="7700023" basicPowerUsage="1.0"
+			   useHighCapPowerPerSec="0.0" powerCategory="LifeSupport" suction="false">
+				<logic resource="7700021" is="GreaterThan" value="0"/>
+				<heat type="HeatTo" temp="Low"/>
+			</l>
+		</value>
+	</Operation>
+	<Operation Class="NodeAdd">
+		<xpath>/data/Element/me[@mid='924']/data/l/element/features/produces</xpath>
+		<value>
+			<l valuePerSec="50" product="7700023" basicPowerUsage="1.0"
+			   useHighCapPowerPerSec="0.0" powerCategory="LifeSupport" suction="false">
+				<logic resource="7700021" is="GreaterThan" value="0"/>
+				<heat type="HeatTo" temp="Low"/>
+			</l>
+		</value>
+	</Operation>
+	<Operation Class="NodeAdd">
+		<xpath>/data/Element/me[@mid='61']/data/l/element/features/produces</xpath>
+		<value>
+			<l valuePerSec="50" product="7700023" basicPowerUsage="1.0"
+			   useHighCapPowerPerSec="0.0" powerCategory="LifeSupport" suction="false">
+				<logic resource="7700021" is="GreaterThan" value="0"/>
+				<heat type="HeatTo" temp="Low"/>
+			</l>
 		</value>
 	</Operation>
 
