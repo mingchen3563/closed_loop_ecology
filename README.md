@@ -25,7 +25,7 @@ Five surgical patches against `library/haven`:
 | 2 | Composter carbon output × **6** | 1 biomass → 0.10 carbon (matches biochar yields) |
 | 3 | CO2 scrubber = exact inverse of carbon burner | Lossless round-trip C↔CO2 (no exploit) |
 | 4 | **New recipe: Industrial Chemicals Synthesis** | 1 Carbon + 3 Water → **3 Chemicals** |
-| 5 | **New recipe: Biomass Pyrolysis** | 2 Biomass → 1 Carbon |
+| 5 | **New recipe: Biomass Pyrolysis (two-stage)** | 2 Biomass → 1 Carbon + 1 Char Residue (item) → auto-vents to 50 CO2 at CO2 scrubber |
 
 Both new recipes run at the existing Chemical Refinery (mid 939) — no new station to build.
 

@@ -178,10 +178,33 @@
 
 
 	<!-- ════════════════════════════════════════════════════════════════════
-	     SECTION 5: New recipe — Biomass Pyrolysis
-	     (2 Biomass → 1 Carbon + 50 CO2, industrial charcoal production)
+	     SECTION 5: Biomass Pyrolysis with two-stage CO2 release
+
+	     Pattern:  interactive recipe outputs items only (so conditional UI works),
+	               and a non-interactive auto-vent recipe converts the residue item
+	               into atmospheric CO2 at the CO2 scrubber.
+
+	     Stage A — interactive at Chemical Refinery (mid 939, dispatcher 963):
+	       2 Biomass → 1 Carbon + 1 Char Residue (item)
+
+	     Stage B — non-interactive at CO2 Scrubber (mid 922):
+	       1 Char Residue → 50 CO2 (gas to atmosphere)
 	     ════════════════════════════════════════════════════════════════════ -->
 
+	<!-- 5a. New ITEM: Char Residue (eid 7700020) -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product</xpath>
+		<value>
+			<product eid="7700020" type="Elementary" item="0" elementType="Defined">
+				<name tid="100"/>
+				<GUIAnimation aid="rubbleIcon1"/>
+				<sort s="3" p="25"/>
+				<desc/>
+			</product>
+		</value>
+	</Operation>
+
+	<!-- 5b. Stage A — interactive Pyrolysis recipe (output items only) -->
 	<Operation Class="NodeAdd">
 		<xpath>/data/Product</xpath>
 		<value>
@@ -193,14 +216,11 @@
 				<GUIAnimation aid="carbonIcon1"/>
 				<sort s="3" p="20"/>
 				<needs>
-					<l element="71" howMuch="2" consumeEvery="1"/>     <!-- 2 biomass per cycle -->
+					<l element="71"      howMuch="2" consumeEvery="1"/>   <!-- 2 biomass per cycle -->
 				</needs>
 				<products>
-					<l element="170" howMuch="1"  produceEvery="1"/>   <!-- 1 carbon per cycle -->
-					<!-- CO2 byproduct removed: same reason as 7700001 — interactive recipes
-					     don't reconcile gas outputs with the "produce if storage < X" UI.
-					     Real pyrolysis releases CO2; we abstract that as vented to atmosphere
-					     via the station's heat output rather than tracking it explicitly. -->
+					<l element="170"     howMuch="1" produceEvery="1"/>   <!-- 1 carbon (biochar) -->
+					<l element="7700020" howMuch="1" produceEvery="1"/>   <!-- 1 char residue (待排) -->
 				</products>
 				<accidentList listId="3146"/>
 				<difficulty skill="Industry" level="1">
@@ -208,6 +228,40 @@
 				</difficulty>
 				<desc/>
 			</product>
+		</value>
+	</Operation>
+
+	<!-- 5c. Stage B — non-interactive auto-vent recipe (residue → CO2 gas) -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product</xpath>
+		<value>
+			<product eid="7700022" type="Process" interactive="false"
+			         startOnly="false" itemScrapper="false" smelter="false"
+			         scrapper="false" composter="false"
+			         processValue="100" customPriority="-1">
+				<name tid="100"/>
+				<GUIAnimation aid="co2ResourceIcon"/>
+				<needs>
+					<l element="7700020" howMuch="1" consumeEvery="1"/>   <!-- 1 char residue -->
+				</needs>
+				<products>
+					<l element="64"      howMuch="50" produceEvery="1"/>  <!-- 50 CO2 to atmosphere -->
+				</products>
+				<desc/>
+			</product>
+		</value>
+	</Operation>
+
+	<!-- 5d. Attach the auto-vent recipe to CO2 Scrubber's <produces> block.
+	     Triggers when char residue > 0 in ship storage (item-level logic). -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Element/me[@mid='922']/data/l/element/features/produces</xpath>
+		<value>
+			<l valuePerSec="50" product="7700022" basicPowerUsage="2.0"
+			   useHighCapPowerPerSec="0.0" powerCategory="Facilities" suction="false">
+				<logic resource="7700020" is="GreaterThan" value="0"/>
+				<heat type="HeatTo" temp="Low"/>
+			</l>
 		</value>
 	</Operation>
 
