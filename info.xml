@@ -1,29 +1,53 @@
 <mod>
 	<name>Closed Loop Ecology</name>
 	<description>
-		<![CDATA[Realistic carbon and nitrogen cycles for Space Haven.
+		<![CDATA[Realistic carbon, water, and nitrogen cycles for Space Haven.
 
-Vanilla's life-support economy has two problems:
-- Composting biomass loses 87% of mass to the void (1 biomass → 0.017 fertilizer + 0.10 water + 0.017 carbon, total ~0.13 units recovered).
-- Carbon is mineable but gated at Mining skill level 7, on par with Noble Metals — unjustified given carbon's natural abundance in space.
-- Chemicals (fertilizer precursor) is locked behind Rot, which only comes from combat/corpses. Peaceful playthroughs can't sustain the food cycle.
+Vanilla's life-support economy has three structural breaks:
+- Composting biomass loses 87% of its mass to the accounting void
+- Carbon is mineable but gated at Mining skill 7 (peer with Noble Metals)
+- Chemicals → Fertilizer can only be made from Rot, which requires corpses
 
-This mod closes the loops with five targeted patches:
+Peaceful playthroughs can't close the food loop without trading.
 
-1. **Carbon mining accessible** — drops Mining requirement from level 7 → 2 (matches Base Metals). Raw Chemicals from 6 → 3. Carbonaceous chondrite asteroids should be early-game minable.
+This mod ships six surgical patches:
 
-2. **Composter retains realistic carbon** — bumps biomass→carbon and produce→carbon outputs ~6× (from 0.017 to ~0.10). Matches real biochar yields of 30-70% carbon retention.
+1. Carbon mining skill 7 → 2 (matches Base Metals); Raw Chemicals 6 → 3.
+   Carbonaceous chondrite asteroids become early-game accessible.
 
-3. **CO2 scrubber actually captures carbon** — boosts atmospheric carbon recovery 10×. Crew respiration is no longer just a vent loss.
+2. Composter carbon retention ×6 (1 biomass → 0.10 carbon, matches real
+   biochar yields of 30-70%).
 
-4. **New industrial chemicals synthesis** — adds a recipe to the existing Chemical Refinery: 1 Carbon + 3 Water → 1 Chemicals + 1 Oxygen. Real-world analog: Fischer-Tropsch synthesis. Closes the food cycle without combat dependency.
+3. CO2 scrubber rebalanced to the exact mathematical inverse of the
+   carbon burner. The C ↔ CO2 round-trip is now mass-conservative —
+   no more free-carbon exploit from looping burner + scrubber.
 
-5. **New biomass pyrolysis recipe** — 2 Biomass → 1 Carbon + 50 CO2 (industrial charcoal production). Bypasses composter for high-throughput carbon refining.
+4. New recipe — Industrial Chemicals Synthesis (interactive at the
+   existing Chemical Refinery): 1 Carbon + 3 Water → 3 Chemicals
+   + 2 Oxygen Tanks. The tanks auto-vent to atmospheric O2 at any
+   Life Support station. Real-world analog: Fischer-Tropsch synthesis
+   plus water electrolysis. Closes the fertilizer cycle without
+   combat dependency.
 
-After install, a peaceful 5-crew ship can sustain its fertilizer cycle without trading or hunting, while carbon becomes a meaningful mid-game resource instead of a useless byproduct.]]>
+5. New recipe — Biomass Pyrolysis (interactive at Chemical Refinery):
+   2 Biomass → 1 Carbon + 1 Char Residue. Residue auto-vents to CO2
+   at the CO2 Scrubber. Real-world analog: industrial pyrolysis /
+   charcoal production. Bypasses the lossy composter for high-
+   throughput carbon refining.
+
+6. Two-stage gas-byproduct pattern: gas outputs are bridged through
+   transient inventory items (Oxygen Tank, Char Residue) so the
+   interactive "produce if storage < X" condition keeps working on
+   the crew-operated recipes, while the actual atmospheric release
+   happens via non-interactive vents at appropriate life-support
+   stations.
+
+After install, a peaceful 5-crew ship can run an indefinite food
+cycle on the carbon they mine + the biomass they compost. Water
+remains the primary bottleneck (ice mining), as in vanilla.]]>
 	</description>
 	<minimumLoaderVersion>0.12.1</minimumLoaderVersion>
-	<version>0.1.0</version>
+	<version>0.2.0</version>
 	<author>mingc</author>
 	<modid>7700002</modid>
 	<config></config>
