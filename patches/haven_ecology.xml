@@ -138,11 +138,16 @@
 
 
 	<!-- ════════════════════════════════════════════════════════════════════
-	     SECTION 5: Pyrolysis recipes (char residue item + interactive recipe
-	     + non-interactive auto-vent recipe + dispatcher for the interactive)
+	     SECTION 5: Pyrolysis recipes (split responsibility)
 
-	     These DO NOT attach to vanilla stations.  They're hosted on the new
-	     Pyrolysis Reactor station defined in §6.
+	     Biomass → Carbon + Char Residue is interactive and lives on the
+	     vanilla Chemical Refinery (where it's just another industrial recipe
+	     with item-only outputs).
+
+	     Char Residue → CO2 vent is non-interactive and lives on its own
+	     dedicated station (Pyrolysis Reactor, defined in §6) so it doesn't
+	     interfere with the interactive station's "produce if storage < X"
+	     scheduling.
 	     ════════════════════════════════════════════════════════════════════ -->
 
 	<!-- 5a. Char Residue item (transient inventory item; gets auto-vented to CO2) -->
@@ -159,7 +164,7 @@
 	</Operation>
 
 	<!-- 5b. Interactive Biomass Pyrolysis recipe.
-	     Crew at the Pyrolysis Reactor runs this.  Item-only outputs so the
+	     Crew at the Chemical Refinery runs this.  Item-only outputs so the
 	     "produce if storage < X" condition works on either carbon or char. -->
 	<Operation Class="NodeAdd">
 		<xpath>/data/Product</xpath>
@@ -187,8 +192,19 @@
 		</value>
 	</Operation>
 
+	<!-- 5b-ii. Attach Biomass Pyrolysis to the Chemical Refinery (dispatcher 963) -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product/product[@eid='963']/list/processes</xpath>
+		<value>
+			<l process="7700010"/>
+		</value>
+	</Operation>
+
 	<!-- 5c. Non-interactive char residue → CO2 vent recipe.
-	     Auto-runs at the Pyrolysis Reactor whenever char residue is in storage. -->
+	     Auto-runs at the Pyrolysis Reactor whenever char residue is in storage.
+	     The station does ONLY this (no interactive recipe coexisting), so a
+	     temporarily-empty char inventory just leaves the station idle — no
+	     scheduling conflict with anything else. -->
 	<Operation Class="NodeAdd">
 		<xpath>/data/Product</xpath>
 		<value>
@@ -204,32 +220,6 @@
 				<products>
 					<l element="64"      howMuch="50" produceEvery="1"/>
 				</products>
-				<desc/>
-			</product>
-		</value>
-	</Operation>
-
-	<!-- 5d. Dispatcher for the interactive pyrolysis recipe.
-	     The Pyrolysis Reactor's <produces> references this so crew can select
-	     it in the station UI (same pattern as vanilla Chemical Refinery uses
-	     dispatcher 963). -->
-	<Operation Class="NodeAdd">
-		<xpath>/data/Product</xpath>
-		<value>
-			<product eid="7700040" type="Process" interactive="true"
-			         startOnly="false" itemScrapper="false" smelter="true"
-			         scrapper="false" composter="false"
-			         processValue="100" customPriority="-1">
-				<name tid="7700094"/>                                 <!-- "Biomass Pyrolysis" -->
-				<GUIAnimation aid="carbonIcon1"/>
-				<sort s="3" p="20"/>
-				<needs/>
-				<products/>
-				<list>
-					<processes>
-						<l process="7700010"/>
-					</processes>
-				</list>
 				<desc/>
 			</product>
 		</value>
@@ -277,15 +267,14 @@
 							</additionaFullLit>
 							<features addFacilityIcons="true" noPressureDmg="false" normalState="true" produceInNormal="false" inUseState="true">
 								<produces>
-									<!-- Interactive pyrolysis (via dispatcher 7700040) — crew operated -->
-									<l valuePerSec="10" product="7700040" basicPowerUsage="1.5" useHighCapPowerPerSec="100.0" powerCategory="Industry" suction="false">
+									<!-- ONLY the non-interactive char-residue → CO2 vent.
+									     Station's sole purpose: process char residue from the
+									     Chemical Refinery's pyrolysis recipe and vent the CO2 to
+									     atmosphere.  No interactive recipe = no scheduling conflict. -->
+									<l valuePerSec="50" product="7700022" basicPowerUsage="0.5" useHighCapPowerPerSec="100.0" powerCategory="Industry" suction="false">
+										<logic resource="7700020" is="GreaterThan" value="0"/>
 										<heat type="HeatTo" temp="Medium"/>
 										<gas hazardGasPerSec="2"/>
-									</l>
-									<!-- Non-interactive char-residue vent — auto-runs when residue in storage -->
-									<l valuePerSec="50" product="7700022" basicPowerUsage="0.5" useHighCapPowerPerSec="0.0" powerCategory="Facilities" suction="false">
-										<logic resource="7700020" is="GreaterThan" value="0"/>
-										<heat type="HeatTo" temp="Low"/>
 									</l>
 								</produces>
 								<stateWatchdog autoproduce="true"/>

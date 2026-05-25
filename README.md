@@ -24,28 +24,35 @@ Six surgical patches against `library/haven`:
 | 2 | Composter carbon output × **6** (recipe 2467 + 7 food-compost variants) | 1 biomass → 0.10 carbon (matches real biochar yields) |
 | 3 | CO2 scrubber = exact mathematical inverse of carbon burner | Round-trip C ↔ CO2 is mass-conservative, no free-carbon exploit |
 | 4 | **New recipe: Industrial Chemicals Synthesis** | Interactive at Chemical Refinery: 1 Carbon + 3 Water → 3 Chemicals |
-| 5 | **New recipe: Biomass Pyrolysis** | Interactive at the new Pyrolysis Reactor: 2 Biomass → 1 Carbon + 1 Char Residue |
-| 6 | **New station: Pyrolysis Reactor** | 1×1 buildable in RESOURCE menu. Hosts pyrolysis (interactive) + char→CO2 vent (auto). Self-contained, doesn't touch vanilla stations. |
+| 5 | **New recipe: Biomass Pyrolysis** | Interactive at Chemical Refinery: 2 Biomass → 1 Carbon + 1 Char Residue |
+| 6 | **New station: Pyrolysis Reactor** | 1×1 buildable in RESOURCE menu. Auto-vents Char Residue (from §5) to atmospheric CO2. No crew, no scheduling conflicts. |
 
-The Pyrolysis Reactor is the first new buildable structure introduced by this mod. Chemicals Synthesis still runs on the vanilla Chemical Refinery (its item-only outputs work with the conditional UI fine, no gas byproduct issue).
+Both interactive recipes run on the vanilla Chemical Refinery. The Pyrolysis Reactor is a dedicated atmospheric-vent companion station.
 
-## The Pyrolysis Reactor — design rationale
+## Split responsibility — design rationale
 
-Pyrolysis chemistry releases CO2 as half its product mass. But Space Haven's interactive-recipe UI can't reconcile mixed item+gas outputs (it stalls on "produce if storage < X" checks). The workaround: a *transient item* called **Char Residue** that auto-vents to CO2 in a second non-interactive step.
+Pyrolysis chemistry releases CO2 as half its mass-product. Space Haven's interactive-recipe UI can't reconcile mixed item+gas outputs (it stalls on "produce if storage < X" checks). The workaround used here: a *transient item* called **Char Residue** that gets vented to atmospheric CO2 by a separate auto-runner.
 
-This whole flow has to live on **one station** so it doesn't pollute vanilla stations (CO2 Scrubber, Life Support) with mod recipes — that's why we built a dedicated Pyrolysis Reactor.
+Why split into two stations?
+
+- **Chemical Refinery** runs the **interactive** pyrolysis (`2 Biomass → 1 Carbon + 1 Char Residue`). Item-only outputs → the conditional UI works on either output.
+- **Pyrolysis Reactor** runs the **non-interactive** char vent (`1 Char Residue → 50 CO2`). Its sole purpose is the gas-release step.
+
+If both lived on the same station, the auto-vent would block waiting for char residue any time none was in storage, and that would interfere with the interactive recipe's scheduling. The split keeps each station's job clean.
 
 ```
-On the Pyrolysis Reactor (1×1 buildable):
+Chemical Refinery (vanilla, dispatcher 963)         Pyrolysis Reactor (new, mid 7700050)
+─────────────────────────────────────────           ─────────────────────────────────────────
+Crew operates:                                       Auto, no crew:
 
-  Interactive recipe (crew at station):
-    2 Biomass → 1 Carbon + 1 Char Residue (item)
-
-  Non-interactive recipe (auto-runs when char in storage):
-    1 Char Residue → 50 CO2 (atmospheric)
+  Industrial Chemicals Synthesis                       Char Residue → CO2 vent
+    1 C + 3 H2O → 3 Chemicals                            1 Char Residue → 50 CO2
+                                                         (triggers when storage > 0,
+  Biomass Pyrolysis                                       idle otherwise)
+    2 Biomass → 1 Carbon + 1 Char Residue
 ```
 
-The Reactor visually clones the Water Collector (mid 2451) and reuses its sprites; it lives in the RESOURCE build category (1510) next to the composter and water collector.
+The Pyrolysis Reactor visually clones the Water Collector (mid 2451) and reuses its sprites; it lives in the RESOURCE build category (1510). Build one near your Chemical Refinery so logistic bots can shuttle char residue over quickly.
 
 ## After install (5-crew steady state)
 
@@ -143,10 +150,9 @@ closed_loop_ecology/
 | ID | Kind | Name |
 |---|---|---|
 | 7700001 | Process recipe | Industrial Chemicals Synthesis (interactive, on Chemical Refinery) |
-| 7700010 | Process recipe | Biomass Pyrolysis (interactive, on Pyrolysis Reactor) |
+| 7700010 | Process recipe | Biomass Pyrolysis (interactive, on Chemical Refinery) |
 | 7700020 | Elementary item | Char Residue (transient inventory item) |
 | 7700022 | Process recipe | Char Residue → CO2 vent (non-interactive, on Pyrolysis Reactor) |
-| 7700040 | Process dispatcher | Wraps 7700010 for the Pyrolysis Reactor's UI |
 | 7700050 | Element (`<me>`) | **Pyrolysis Reactor** station (1×1 buildable, RESOURCE category) |
 
 All under the `77000xx` namespace anchored on modid `7700002`.

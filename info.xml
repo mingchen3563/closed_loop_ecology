@@ -27,16 +27,16 @@ This mod ships six surgical patches:
    Real-world analog: Fischer-Tropsch synthesis. Closes the fertilizer
    cycle without combat dependency.
 
-5. New recipe — Biomass Pyrolysis: 2 Biomass → 1 Carbon + 1 Char Residue.
-   Char Residue auto-vents to 50 CO2 in a non-interactive second step.
-   Real-world analog: industrial pyrolysis / charcoal production with
-   the realistic ~50% biomass-to-biochar yield and ~50% CO2 release.
+5. New recipe — Biomass Pyrolysis (interactive at the Chemical Refinery):
+   2 Biomass → 1 Carbon + 1 Char Residue. Real-world analog: industrial
+   pyrolysis / charcoal production with the realistic ~50% biomass-to-
+   biochar yield.
 
 6. New buildable station — Pyrolysis Reactor (1×1 in RESOURCE category).
-   Hosts both the interactive pyrolysis recipe and the non-interactive
-   char-residue → CO2 vent. Self-contained: doesn't pollute vanilla
-   stations like the CO2 Scrubber or Life Support. Visually clones the
-   Water Collector (waterCollector1F sprites reused).
+   Auto-vents the Char Residue from §5 to atmospheric CO2. No crew
+   operation; runs whenever residue is in storage, idle otherwise. Build
+   one near your Chemical Refinery so logistic bots can shuttle char to
+   it. Visually clones the Water Collector for now.
 
 After install, a peaceful 5-crew ship can run an indefinite food cycle
 on the carbon they mine + the biomass they compost. Water remains the

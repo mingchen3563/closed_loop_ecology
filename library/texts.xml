@@ -17,7 +17,7 @@
 	</t>
 
 	<t id="7700091">
-		<EN>Thermally decomposes biomass into solid carbon (biochar) and gaseous CO2. The reactor handles both stages on its own — crew operate the pyrolysis itself, and the residual char vents to atmosphere automatically. Closes the food/fertilizer loop by feeding the Chemical Refinery with carbon without needing combat-sourced Rot.</EN>
+		<EN>Automatically combusts Char Residue (the byproduct of biomass pyrolysis at the Chemical Refinery) and vents the resulting CO2 to atmosphere. No crew operation required — the reactor runs whenever char residue is in storage and sits idle when not. Build one next to your Chemical Refinery to handle the gas-byproduct side of pyrolysis.</EN>
 	</t>
 
 
