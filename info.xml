@@ -10,7 +10,7 @@ Vanilla's life-support economy has three structural breaks:
 
 Peaceful playthroughs can't close the food loop without trading.
 
-This mod ships five surgical patches:
+This mod ships six surgical patches:
 
 1. Carbon mining skill 7 → 2 (matches Base Metals); Raw Chemicals 6 → 3.
    Carbonaceous chondrite asteroids become early-game accessible.
@@ -25,26 +25,25 @@ This mod ships five surgical patches:
 4. New recipe — Industrial Chemicals Synthesis (interactive at the
    existing Chemical Refinery): 1 Carbon + 3 Water → 3 Chemicals.
    Real-world analog: Fischer-Tropsch synthesis. Closes the fertilizer
-   cycle without combat dependency. Conditional "produce if storage < X"
-   condition works because outputs are item-only.
+   cycle without combat dependency.
 
-5. New recipe — Biomass Pyrolysis (interactive at Chemical Refinery):
-   2 Biomass → 1 Carbon. Real-world analog: industrial pyrolysis /
-   charcoal production. Bypasses the lossy composter for high-throughput
-   carbon refining.
+5. New recipe — Biomass Pyrolysis: 2 Biomass → 1 Carbon + 1 Char Residue.
+   Char Residue auto-vents to 50 CO2 in a non-interactive second step.
+   Real-world analog: industrial pyrolysis / charcoal production with
+   the realistic ~50% biomass-to-biochar yield and ~50% CO2 release.
 
-Gas byproducts (oxygen from electrolysis, CO2 from pyrolysis) are
-intentionally not modeled — they would break the conditional UI on
-interactive recipes. Reserved for a future Pyrolysis Reactor station
-that can host both the interactive recipe and its non-interactive
-gas-vent on its own (without polluting vanilla stations).
+6. New buildable station — Pyrolysis Reactor (1×1 in RESOURCE category).
+   Hosts both the interactive pyrolysis recipe and the non-interactive
+   char-residue → CO2 vent. Self-contained: doesn't pollute vanilla
+   stations like the CO2 Scrubber or Life Support. Visually clones the
+   Water Collector (waterCollector1F sprites reused).
 
-After install, a peaceful 5-crew ship can run an indefinite food
-cycle on the carbon they mine + the biomass they compost. Water
-remains the primary bottleneck (ice mining), as in vanilla.]]>
+After install, a peaceful 5-crew ship can run an indefinite food cycle
+on the carbon they mine + the biomass they compost. Water remains the
+primary bottleneck (ice mining), as in vanilla.]]>
 	</description>
 	<minimumLoaderVersion>0.12.1</minimumLoaderVersion>
-	<version>0.2.0</version>
+	<version>0.3.0</version>
 	<author>mingc</author>
 	<modid>7700002</modid>
 	<config></config>

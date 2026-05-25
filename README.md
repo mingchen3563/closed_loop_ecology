@@ -24,23 +24,28 @@ Six surgical patches against `library/haven`:
 | 2 | Composter carbon output × **6** (recipe 2467 + 7 food-compost variants) | 1 biomass → 0.10 carbon (matches real biochar yields) |
 | 3 | CO2 scrubber = exact mathematical inverse of carbon burner | Round-trip C ↔ CO2 is mass-conservative, no free-carbon exploit |
 | 4 | **New recipe: Industrial Chemicals Synthesis** | Interactive at Chemical Refinery: 1 Carbon + 3 Water → 3 Chemicals |
-| 5 | **New recipe: Biomass Pyrolysis** | Interactive at Chemical Refinery: 2 Biomass → 1 Carbon |
+| 5 | **New recipe: Biomass Pyrolysis** | Interactive at the new Pyrolysis Reactor: 2 Biomass → 1 Carbon + 1 Char Residue |
+| 6 | **New station: Pyrolysis Reactor** | 1×1 buildable in RESOURCE menu. Hosts pyrolysis (interactive) + char→CO2 vent (auto). Self-contained, doesn't touch vanilla stations. |
 
-All new recipes run at existing vanilla stations — no new visual assets, no new buildings.
+The Pyrolysis Reactor is the first new buildable structure introduced by this mod. Chemicals Synthesis still runs on the vanilla Chemical Refinery (its item-only outputs work with the conditional UI fine, no gas byproduct issue).
 
-## Gas byproducts (intentionally omitted)
+## The Pyrolysis Reactor — design rationale
 
-Physically, the new recipes should emit gas byproducts:
-- Industrial Chemicals Synthesis (Fischer-Tropsch + electrolysis) → free O2 to atmosphere
-- Biomass Pyrolysis → CO2 to atmosphere (50% of biomass mass)
+Pyrolysis chemistry releases CO2 as half its product mass. But Space Haven's interactive-recipe UI can't reconcile mixed item+gas outputs (it stalls on "produce if storage < X" checks). The workaround: a *transient item* called **Char Residue** that auto-vents to CO2 in a second non-interactive step.
 
-The mod doesn't model these because:
+This whole flow has to live on **one station** so it doesn't pollute vanilla stations (CO2 Scrubber, Life Support) with mod recipes — that's why we built a dedicated Pyrolysis Reactor.
 
-1. **Interactive recipes with mixed item+gas outputs break the conditional UI.** Space Haven's "produce if storage < X" stop-condition can't reconcile gas outputs (no inventory), so the recipe stalls in a permanent condition-mismatch.
+```
+On the Pyrolysis Reactor (1×1 buildable):
 
-2. **The two-stage workaround** (transient inventory items auto-vented at other stations) is functional but pollutes vanilla stations like the CO2 Scrubber and Life Support with mod recipes. Stacking with other ecology mods becomes messy.
+  Interactive recipe (crew at station):
+    2 Biomass → 1 Carbon + 1 Char Residue (item)
 
-The gas byproducts are abstracted as part of station atmospheric exchange. A future version may re-introduce them via a dedicated mod station (Pyrolysis Reactor / Electrolysis Cell) that hosts both the interactive recipe and its non-interactive vent without touching vanilla stations.
+  Non-interactive recipe (auto-runs when char in storage):
+    1 Char Residue → 50 CO2 (atmospheric)
+```
+
+The Reactor visually clones the Water Collector (mid 2451) and reuses its sprites; it lives in the RESOURCE build category (1510) next to the composter and water collector.
 
 ## After install (5-crew steady state)
 
@@ -107,9 +112,10 @@ Then launch `spacehaven-modloader`, enable **Closed Loop Ecology**, apply, launc
 
 Existing stations on a save snapshot their `<features>` config at build time. After installing the mod you **must dismantle and rebuild**:
 
-- **Chemical Refinery** — to pick up the new Pyrolysis and Industrial Chemicals Synthesis recipes
+- **Chemical Refinery** — to pick up the new Industrial Chemicals Synthesis recipe
 - **CO2 Scrubber** — to pick up the rebalanced (burner-symmetric) carbon recovery rate
 - **Composter** — to pick up the boosted carbon retention
+- The new **Pyrolysis Reactor** is buildable from the Resource build category on any new ship
 
 Newly-built stations on the same save pick up the changes automatically. This is a save-state quirk, not a mod bug.
 
@@ -135,9 +141,13 @@ closed_loop_ecology/
 | ID | Kind | Name |
 |---|---|---|
 | 7700001 | Process recipe | Industrial Chemicals Synthesis (interactive, on Chemical Refinery) |
-| 7700010 | Process recipe | Biomass Pyrolysis (interactive, on Chemical Refinery) |
+| 7700010 | Process recipe | Biomass Pyrolysis (interactive, on Pyrolysis Reactor) |
+| 7700020 | Elementary item | Char Residue (transient inventory item) |
+| 7700022 | Process recipe | Char Residue → CO2 vent (non-interactive, on Pyrolysis Reactor) |
+| 7700040 | Process dispatcher | Wraps 7700010 for the Pyrolysis Reactor's UI |
+| 7700050 | Element (`<me>`) | **Pyrolysis Reactor** station (1×1 buildable, RESOURCE category) |
 
-All under the `77000xx` namespace anchored on modid `7700002`. IDs 7700020-7700099 reserved for the future Pyrolysis Reactor station and its gas-vent recipes.
+All under the `77000xx` namespace anchored on modid `7700002`.
 
 ## License
 

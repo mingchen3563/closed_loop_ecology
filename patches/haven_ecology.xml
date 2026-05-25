@@ -3,28 +3,17 @@
 
 	<!--
 	  ════════════════════════════════════════════════════════════════════════
-	  Closed Loop Ecology — Phase 1
+	  Closed Loop Ecology
 
-	  Five surgical patches that close the food/carbon/chemicals cycle.
+	  Six surgical patches that close the food/carbon/chemicals cycle:
 
-	  References (real-world chemistry):
-	    - Biochar carbon retention 30-70%       (vanilla: 1.7%)
-	    - Carbonaceous chondrites Mining easy   (vanilla: lvl 7 expert)
-	    - Burner / scrubber round-trip          must be mass-conservative
-	    - Fischer-Tropsch synthesis (1925)      Carbon + H2O → hydrocarbons
-	    - Industrial pyrolysis                  Biomass → biochar + CO2
-
-	  Note on gas byproducts:
-	    Both new interactive recipes (7700001 Chemicals Synthesis, 7700010
-	    Biomass Pyrolysis) physically should emit gas byproducts (O2 and CO2
-	    respectively). They don't, because:
-	      (a) interactive recipes with mixed item+gas outputs break the
-	          "produce if storage < X" condition UI
-	      (b) the two-stage workaround (transient items auto-vented at other
-	          stations) pollutes existing vanilla stations with mod recipes
-
-	    Both gas byproducts are abstracted as part of station atmospheric
-	    exchange until a dedicated mod station is added to host them cleanly.
+	  §1  Carbon and Raw Chemicals minable at reasonable levels
+	  §2  Composter retains realistic amounts of carbon (×6 boost)
+	  §3  CO2 scrubber rebalanced to be the exact inverse of the carbon burner
+	  §4  New recipe: Industrial Chemicals Synthesis (on Chemical Refinery)
+	  §5  New recipe: Biomass Pyrolysis (on dedicated new Pyrolysis Reactor)
+	  §6  New station: Pyrolysis Reactor (1×1 buildable, hosts both pyrolysis
+	      and the non-interactive char-residue → CO2 vent)
 	  ════════════════════════════════════════════════════════════════════════
 	-->
 
@@ -33,16 +22,11 @@
 	     SECTION 1: Carbon and Raw Chemicals minable at reasonable levels
 	     ════════════════════════════════════════════════════════════════════ -->
 
-	<!-- Carbon (170): Mining skill 7 → 2.  Matches Base Metals tier.
-	     Justification: carbonaceous chondrites are soft and friable;
-	     real space carbon mining requires no special skill. -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='170']/mineable/difficulty</xpath>
 		<attribute>level</attribute>
 		<value>2</value>
 	</Operation>
-
-	<!-- Raw Chemicals (171): Mining skill 6 → 3.  Slightly above Carbon. -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='171']/mineable/difficulty</xpath>
 		<attribute>level</attribute>
@@ -51,60 +35,44 @@
 
 
 	<!-- ════════════════════════════════════════════════════════════════════
-	     SECTION 2: Composter retains realistic amounts of carbon
-	     (biochar-like efficiency, ~10-25% of input mass)
+	     SECTION 2: Composter retains realistic amounts of carbon (×6 boost)
 	     ════════════════════════════════════════════════════════════════════ -->
 
-	<!-- 2467 Biomass:  carbon 0.017 → 0.10  (6×) -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2467']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>10</value>
 	</Operation>
-
-	<!-- 2472 Root Veggies:  carbon 0.020 → 0.125 -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2472']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>8</value>
 	</Operation>
-
-	<!-- 2463 Fruit -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2463']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>8</value>
 	</Operation>
-
-	<!-- 2468 Fiber -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2468']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>8</value>
 	</Operation>
-
-	<!-- 2897 Nuts -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2897']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>8</value>
 	</Operation>
-
-	<!-- 2478 Artificial Meat:  more concentrated lab-protein → more carbon -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2478']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>4</value>
 	</Operation>
-
-	<!-- 2471 Processed Food (Algae) -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2471']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
 		<value>16</value>
 	</Operation>
-
-	<!-- 2473 Space Food -->
 	<Operation Class="AttributeSet">
 		<xpath>/data/Product/product[@eid='2473']/products/l[@element='170']</xpath>
 		<attribute>produceEvery</attribute>
@@ -113,15 +81,9 @@
 
 
 	<!-- ════════════════════════════════════════════════════════════════════
-	     SECTION 3: CO2 scrubber is the exact mathematical inverse of the
-	     carbon burner (recipe 65), so the round-trip C → CO2 → C conserves
-	     mass exactly. No free-energy exploit.
-
-	       Burner (recipe 65) per cycle:
-	         consume 0.0025 carbon  →  produce 50 CO2     (ratio 1 C : 20,000 CO2)
-
-	       Scrubber (recipe 66) per cycle, after this patch:
-	         consume 50 CO2         →  produce 0.0025 carbon
+	     SECTION 3: CO2 scrubber = exact inverse of carbon burner
+	       Burner (recipe 65):  0.0025 C → 50 CO2  per cycle
+	       Scrubber (recipe 66):    50 CO2 → 0.0025 C  per cycle
 	     ════════════════════════════════════════════════════════════════════ -->
 
 	<Operation Class="AttributeSet">
@@ -138,10 +100,8 @@
 
 	<!-- ════════════════════════════════════════════════════════════════════
 	     SECTION 4: New recipe — Industrial Chemicals Synthesis
-	     (Carbon + Water → Chemicals, hosted on Chemical Refinery)
-
-	     Item-only outputs.  Conditional "produce if storage < X" UI works.
-	     Oxygen byproduct intentionally omitted (would break the UI).
+	     Hosted on Chemical Refinery (mid 939) via dispatcher 963.
+	     Item-only outputs (no O2 byproduct) so conditional UI works.
 	     ════════════════════════════════════════════════════════════════════ -->
 
 	<Operation Class="NodeAdd">
@@ -155,11 +115,11 @@
 				<GUIAnimation aid="chemicalsIcon1"/>
 				<sort s="3" p="20"/>
 				<needs>
-					<l element="170" howMuch="1" consumeEvery="1"/>    <!-- 1 carbon per cycle -->
-					<l element="16"  howMuch="3" consumeEvery="1"/>    <!-- 3 water per cycle -->
+					<l element="170" howMuch="1" consumeEvery="1"/>
+					<l element="16"  howMuch="3" consumeEvery="1"/>
 				</needs>
 				<products>
-					<l element="176" howMuch="3" produceEvery="1"/>    <!-- 3 chemicals per cycle -->
+					<l element="176" howMuch="3" produceEvery="1"/>
 				</products>
 				<accidentList listId="3146"/>
 				<difficulty skill="Industry" level="2">
@@ -169,8 +129,6 @@
 			</product>
 		</value>
 	</Operation>
-
-	<!-- Attach to Chemical Refinery's dispatcher 963 -->
 	<Operation Class="NodeAdd">
 		<xpath>/data/Product/product[@eid='963']/list/processes</xpath>
 		<value>
@@ -180,15 +138,29 @@
 
 
 	<!-- ════════════════════════════════════════════════════════════════════
-	     SECTION 5: New recipe — Biomass Pyrolysis
-	     (2 Biomass → 1 Carbon, hosted on Chemical Refinery)
+	     SECTION 5: Pyrolysis recipes (char residue item + interactive recipe
+	     + non-interactive auto-vent recipe + dispatcher for the interactive)
 
-	     Item-only outputs.  CO2 byproduct intentionally omitted; it would
-	     need a dedicated mod station to host the auto-vent without polluting
-	     the vanilla CO2 scrubber.  TODO: re-introduce when a Pyrolysis
-	     Reactor station is added.
+	     These DO NOT attach to vanilla stations.  They're hosted on the new
+	     Pyrolysis Reactor station defined in §6.
 	     ════════════════════════════════════════════════════════════════════ -->
 
+	<!-- 5a. Char Residue item (transient inventory item; gets auto-vented to CO2) -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product</xpath>
+		<value>
+			<product eid="7700020" type="Elementary" item="0" elementType="Defined">
+				<name tid="100"/>
+				<GUIAnimation aid="rubbleIcon1"/>
+				<sort s="3" p="25"/>
+				<desc/>
+			</product>
+		</value>
+	</Operation>
+
+	<!-- 5b. Interactive Biomass Pyrolysis recipe.
+	     Crew at the Pyrolysis Reactor runs this.  Item-only outputs so the
+	     "produce if storage < X" condition works on either carbon or char. -->
 	<Operation Class="NodeAdd">
 		<xpath>/data/Product</xpath>
 		<value>
@@ -200,10 +172,11 @@
 				<GUIAnimation aid="carbonIcon1"/>
 				<sort s="3" p="20"/>
 				<needs>
-					<l element="71" howMuch="2" consumeEvery="1"/>     <!-- 2 biomass per cycle -->
+					<l element="71"      howMuch="2" consumeEvery="1"/>
 				</needs>
 				<products>
-					<l element="170" howMuch="1" produceEvery="1"/>    <!-- 1 carbon (biochar) -->
+					<l element="170"     howMuch="1" produceEvery="1"/>
+					<l element="7700020" howMuch="1" produceEvery="1"/>
 				</products>
 				<accidentList listId="3146"/>
 				<difficulty skill="Industry" level="1">
@@ -214,11 +187,150 @@
 		</value>
 	</Operation>
 
-	<!-- Attach to Chemical Refinery's dispatcher 963 -->
+	<!-- 5c. Non-interactive char residue → CO2 vent recipe.
+	     Auto-runs at the Pyrolysis Reactor whenever char residue is in storage. -->
 	<Operation Class="NodeAdd">
-		<xpath>/data/Product/product[@eid='963']/list/processes</xpath>
+		<xpath>/data/Product</xpath>
 		<value>
-			<l process="7700010"/>
+			<product eid="7700022" type="Process" interactive="false"
+			         startOnly="false" itemScrapper="false" smelter="false"
+			         scrapper="false" composter="false"
+			         processValue="100" customPriority="-1">
+				<name tid="100"/>
+				<GUIAnimation aid="co2ResourceIcon"/>
+				<needs>
+					<l element="7700020" howMuch="1"  consumeEvery="1"/>
+				</needs>
+				<products>
+					<l element="64"      howMuch="50" produceEvery="1"/>
+				</products>
+				<desc/>
+			</product>
+		</value>
+	</Operation>
+
+	<!-- 5d. Dispatcher for the interactive pyrolysis recipe.
+	     The Pyrolysis Reactor's <produces> references this so crew can select
+	     it in the station UI (same pattern as vanilla Chemical Refinery uses
+	     dispatcher 963). -->
+	<Operation Class="NodeAdd">
+		<xpath>/data/Product</xpath>
+		<value>
+			<product eid="7700040" type="Process" interactive="true"
+			         startOnly="false" itemScrapper="false" smelter="true"
+			         scrapper="false" composter="false"
+			         processValue="100" customPriority="-1">
+				<name tid="100"/>
+				<GUIAnimation aid="carbonIcon1"/>
+				<sort s="3" p="20"/>
+				<needs/>
+				<products/>
+				<list>
+					<processes>
+						<l process="7700010"/>
+					</processes>
+				</list>
+				<desc/>
+			</product>
+		</value>
+	</Operation>
+
+
+	<!-- ════════════════════════════════════════════════════════════════════
+	     SECTION 6: New buildable station — Pyrolysis Reactor (mid 7700050)
+
+	     Cloned from the Water Collector (mid 2451, 1×1 RESOURCE-category
+	     buildable).  Visual reuses waterCollector1F sprites — distinct from
+	     Composter and Chemical Refinery so players can tell them apart.
+
+	     Hosts two recipes:
+	       - dispatcher 7700040  (interactive pyrolysis, crew operated)
+	       - recipe 7700022      (auto-vent char residue → CO2, atmospheric)
+	     ════════════════════════════════════════════════════════════════════ -->
+
+	<Operation Class="NodeAdd">
+		<xpath>/data/Element</xpath>
+		<value>
+			<me mid="7700050" ec="2" costGroup="875" offsetRot="R0" nonSymmetrical="false" alternateY="false">
+				<data>
+					<l type="Object" eid="1" gridOffX="0" gridOffY="0" layer="0">
+						<element id="0" renderOnFloor="false" renderOnFloorPartially="false" noMoveDismantle="false" cannotBeSelected="false" walkGridCost="255" lightValue="High">
+							<definedStates>
+								<l state="InUse" playAnimation="true">
+									<r0 aid="waterCollector1F" flx="true"/>
+									<r90 aid="null" flx="false"/>
+									<r180 aid="waterCollector1B" flx="false"/>
+									<r270 aid="null" flx="false"/>
+								</l>
+								<l state="Standby" playAnimation="true">
+									<r0 aid="waterCollector1F" flx="true"/>
+									<r90 aid="null" flx="false"/>
+									<r180 aid="waterCollector1B" flx="false"/>
+									<r270 aid="null" flx="false"/>
+								</l>
+							</definedStates>
+							<additionaFullLit x="0" y="0" mirX="0" mirY="0" atNoPower="false" atStandby="true" atInuse="true">
+								<r0 aid="waterCollector1FLights" flx="true"/>
+								<r90 aid="null" flx="false"/>
+								<r180 aid="waterCollector1BLights" flx="false"/>
+								<r270 aid="null" flx="false"/>
+							</additionaFullLit>
+							<features addFacilityIcons="true" noPressureDmg="false" normalState="true" produceInNormal="false" inUseState="true">
+								<produces>
+									<!-- Interactive pyrolysis (via dispatcher 7700040) — crew operated -->
+									<l valuePerSec="10" product="7700040" basicPowerUsage="1.5" useHighCapPowerPerSec="100.0" powerCategory="Industry" suction="false">
+										<heat type="HeatTo" temp="Medium"/>
+										<gas hazardGasPerSec="2"/>
+									</l>
+									<!-- Non-interactive char-residue vent — auto-runs when residue in storage -->
+									<l valuePerSec="50" product="7700022" basicPowerUsage="0.5" useHighCapPowerPerSec="0.0" powerCategory="Facilities" suction="false">
+										<logic resource="7700020" is="GreaterThan" value="0"/>
+										<heat type="HeatTo" temp="Low"/>
+									</l>
+								</produces>
+								<stateWatchdog autoproduce="true"/>
+								<environment repairBlockFail="0.1" coldOffTempC="-100" coldSlowTempC="0" hotSlowTempC="60" hotOffTempC="200" coldTempSlowdown="0.8" hotTempSlowdown="1.0" cyclesForDmg="100" cyclesDmgChance="0.1" hazTimeDmg="360" hazDmgChance="0.5" waterTimeDmg="360" waterDmgChance="0.0" tempTimeDmg="360" tempDmgChance="0.1"/>
+								<noiseAndComfort onlyWhenInuse="false" category="ObjectId">
+									<noise ignoreZoomLevel="false" noise="10.0">
+										<audio auid="null"/>
+									</noise>
+									<constantSound>
+										<atStandby auid="4308"/>
+										<atInUse auid="4308"/>
+									</constantSound>
+									<radiusBeauty roomDrop="15" work="-6" sleep="-20" leisure="-10" radius="4"/>
+								</noiseAndComfort>
+							</features>
+							<boxHatch x="17" y="-2" boxX="17" boxY="-2" in="true" out="true" flipR90="false" type2="false" wallHatch="false">
+								<activate activateOffX="0" activateOffY="-1"/>
+							</boxHatch>
+							<commonPower powerCategory="Industry"/>
+						</element>
+					</l>
+				</data>
+				<linked/>
+				<events/>
+				<objectInfo placeInMenu="5" disableRotation="false" disableBuildTest="false" buildInstant="false" disableAirlockTest="false" debugOnly="false" canDismantleOnly="false" randomRot="false" viewMode="Normal" systemPoints="0" canBuildAt="All" outdoorObject="false" indoorObject="true">
+					<cu>
+						<groups>
+							<l rep="875" buildTools="15">
+								<customPrice>
+									<l elementId="162" howMuch="2"/>
+									<l elementId="930" howMuch="2"/>
+								</customPrice>
+							</l>
+						</groups>
+					</cu>
+					<name tid="3626"/>
+					<desc tid="3627"/>
+					<guiIcon aid="build_icon_2451"/>
+					<subCat id="1510"/>
+					<difficultyLevel skill="Construction" level="3"/>
+					<restrictions>
+						<l type="Floor" gridX="0" gridY="-1" sizeX="1" sizeY="1"/>
+					</restrictions>
+				</objectInfo>
+			</me>
 		</value>
 	</Operation>
 
