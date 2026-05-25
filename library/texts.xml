@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<t>
+
+	<!-- ════════════════════════════════════════════════════════════════
+	     Custom strings for Closed Loop Ecology (modid 7700002)
+	     IDs in the 77000xx namespace.
+
+	     Only EN provided; the game falls back to English for unsupported
+	     languages.  Add localizations as PRs if desired.
+	     ════════════════════════════════════════════════════════════════ -->
+
+
+	<!-- Pyrolysis Reactor station (mid 7700050) -->
+
+	<t id="7700090">
+		<EN>Pyrolysis Reactor</EN>
+	</t>
+
+	<t id="7700091">
+		<EN>Thermally decomposes biomass into solid carbon (biochar) and gaseous CO2. The reactor handles both stages on its own — crew operate the pyrolysis itself, and the residual char vents to atmosphere automatically. Closes the food/fertilizer loop by feeding the Chemical Refinery with carbon without needing combat-sourced Rot.</EN>
+	</t>
+
+
+	<!-- Char Residue item (eid 7700020) -->
+
+	<t id="7700092">
+		<EN>Char Residue</EN>
+	</t>
+
+	<t id="7700093">
+		<EN>Partially carbonized biomass exhaust waiting to be vented as CO2. Produced as a byproduct of pyrolysis. The reactor automatically vents it to atmosphere when in storage.</EN>
+	</t>
+
+
+	<!-- Biomass Pyrolysis recipe (eid 7700010) -->
+
+	<t id="7700094">
+		<EN>Biomass Pyrolysis</EN>
+	</t>
+
+
+	<!-- Industrial Chemicals Synthesis recipe (eid 7700001) -->
+
+	<t id="7700095">
+		<EN>Industrial Chemicals Synthesis</EN>
+	</t>
+
+</t>

@@ -132,7 +132,9 @@ Newly-built stations on the same save pick up the changes automatically. This is
 closed_loop_ecology/
 ├── info.xml                          # mod metadata, modid 7700002
 ├── patches/
-│   └── haven_ecology.xml             # 6 sections, ~20 operations
+│   └── haven_ecology.xml             # 6 sections, ~25 operations
+├── library/
+│   └── texts.xml                     # custom names + descriptions
 └── README.md
 ```
 

@@ -111,7 +111,7 @@
 			         startOnly="false" itemScrapper="false" smelter="false"
 			         scrapper="false" composter="false"
 			         processValue="100" customPriority="-1">
-				<name tid="100"/>
+				<name tid="7700095"/>                                 <!-- "Industrial Chemicals Synthesis" -->
 				<GUIAnimation aid="chemicalsIcon1"/>
 				<sort s="3" p="20"/>
 				<needs>
@@ -150,10 +150,10 @@
 		<xpath>/data/Product</xpath>
 		<value>
 			<product eid="7700020" type="Elementary" item="0" elementType="Defined">
-				<name tid="100"/>
+				<name tid="7700092"/>                                 <!-- "Char Residue" -->
 				<GUIAnimation aid="rubbleIcon1"/>
 				<sort s="3" p="25"/>
-				<desc/>
+				<desc tid="7700093"/>
 			</product>
 		</value>
 	</Operation>
@@ -168,7 +168,7 @@
 			         startOnly="false" itemScrapper="false" smelter="false"
 			         scrapper="false" composter="false"
 			         processValue="100" customPriority="-1">
-				<name tid="100"/>
+				<name tid="7700094"/>                                 <!-- "Biomass Pyrolysis" -->
 				<GUIAnimation aid="carbonIcon1"/>
 				<sort s="3" p="20"/>
 				<needs>
@@ -220,7 +220,7 @@
 			         startOnly="false" itemScrapper="false" smelter="true"
 			         scrapper="false" composter="false"
 			         processValue="100" customPriority="-1">
-				<name tid="100"/>
+				<name tid="7700094"/>                                 <!-- "Biomass Pyrolysis" -->
 				<GUIAnimation aid="carbonIcon1"/>
 				<sort s="3" p="20"/>
 				<needs/>
@@ -321,8 +321,8 @@
 							</l>
 						</groups>
 					</cu>
-					<name tid="3626"/>
-					<desc tid="3627"/>
+					<name tid="7700090"/>                                 <!-- "Pyrolysis Reactor" -->
+					<desc tid="7700091"/>                                 <!-- "Thermally decomposes biomass..." -->
 					<guiIcon aid="build_icon_2451"/>
 					<subCat id="1510"/>
 					<difficultyLevel skill="Construction" level="3"/>
