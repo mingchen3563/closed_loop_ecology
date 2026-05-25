@@ -141,7 +141,7 @@
 		<xpath>/data/Product</xpath>
 		<value>
 			<product eid="7700001" type="Process" interactive="true"
-			         startOnly="false" itemScrapper="false" smelter="true"
+			         startOnly="false" itemScrapper="false" smelter="false"
 			         scrapper="false" composter="false"
 			         processValue="100" customPriority="-1">
 				<name tid="100"/>
@@ -155,7 +155,10 @@
 					<l element="176" howMuch="3" produceEvery="1"/>    <!-- 3 chemicals per cycle -->
 					<l element="63"  howMuch="2" produceEvery="1"/>    <!-- 2 oxygen per cycle -->
 				</products>
-				<difficulty skill="Industry" level="2"/>
+				<accidentList listId="3146"/>
+				<difficulty skill="Industry" level="2">
+					<custom time="25"/>
+				</difficulty>
 				<desc/>
 			</product>
 		</value>
@@ -179,7 +182,7 @@
 		<xpath>/data/Product</xpath>
 		<value>
 			<product eid="7700010" type="Process" interactive="true"
-			         startOnly="false" itemScrapper="false" smelter="true"
+			         startOnly="false" itemScrapper="false" smelter="false"
 			         scrapper="false" composter="false"
 			         processValue="100" customPriority="-1">
 				<name tid="100"/>
@@ -192,7 +195,10 @@
 					<l element="170" howMuch="1"  produceEvery="1"/>   <!-- 1 carbon per cycle -->
 					<l element="64"  howMuch="50" produceEvery="1"/>   <!-- 50 CO2 per cycle -->
 				</products>
-				<difficulty skill="Industry" level="1"/>
+				<accidentList listId="3146"/>
+				<difficulty skill="Industry" level="1">
+					<custom time="25"/>
+				</difficulty>
 				<desc/>
 			</product>
 		</value>
